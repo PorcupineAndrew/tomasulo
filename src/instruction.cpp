@@ -1,14 +1,16 @@
 #include "instruction.h"
 
-int Instruction::_idx = 0;
+int Instruction::_id = 0;
 
 Instruction::Instruction() {
-    this->idx = -1;
+    this->id = -1;
 }
 
 Instruction::Instruction(int op, int dst, int src1, int src2,
                 int dst_t, int src1_t, int src2_t, string inst_string) {
-    this->idx = _idx++;
+    this->to_record = true;
+    // this->first_access = true;
+    this->id = _id++;
     this->op = op;
     this->dst = dst;
     this->src1 = src1;
@@ -28,14 +30,14 @@ Instruction::Instruction(int op, int dst, int src1, int src2,
 }
 
 void Instruction::print() const {
-    cout << idx << ": " << inst_string << endl;
+    cout << inst_string << endl;
     cout << "\tissue: " <<  issue_cycle 
         << ", exec_comp: " <<  exec_comp_cycle 
         << ", write_result: " << write_result_cycle << endl;
 }
 
 bool Instruction::compare(const Instruction& i, const Instruction& j) {
-    return i.idx < j.idx;
+    return i.id < j.id;
 }
 
 Instruction Instruction::parse(string inst_string) {
@@ -71,7 +73,9 @@ Instruction Instruction::parse(string inst_string) {
 
             assert(items[2][1] == 'x');
             src1_t = INST_INT;
-            stringstream(items[2]) >> hex >> src1;
+            uint32_t tmp;
+            stringstream(items[2]) >> hex >> tmp;
+            src1 = COMPLE_INT(tmp);
 
             break;
         case INST_ADD:
@@ -91,7 +95,9 @@ Instruction Instruction::parse(string inst_string) {
                 } else {
                     assert(items[i][1] == 'x');
                     type = INST_INT;
-                    stringstream(items[i]) >> hex >> target;
+                    uint32_t tmp;
+                    stringstream(items[i]) >> hex >> tmp;
+                    target = COMPLE_INT(tmp);
                 }
             }
 
@@ -110,3 +116,17 @@ Instruction Instruction::parse(string inst_string) {
 
     return Instruction(op, dst, src1, src2, dst_t, src1_t, src2_t, inst_string);
 }
+
+// Instruction Instruction::cpy(Instruction& inst) {
+//     Instruction ret;
+//     if (inst.first_access) {
+//         inst.first_access = false;
+//         ret = inst;
+//         ret.to_record = true;
+//     } else {
+//         ret = inst;
+//         ret.to_record = false;
+//     }
+//     ret.id = _id ++;
+//     return ret;
+// }

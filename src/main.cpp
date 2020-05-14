@@ -31,20 +31,8 @@ int main(int argc, char** argv) {
     ifstream inFile (fName);
     Reservation_Station rs(N_RS_ADD, N_FU_ADD, N_RS_MUL, N_FU_MUL, N_RS_LOAD, N_FU_LOAD);
 
-    if (inFile.is_open()) {
-        string line;
-        while (getline(inFile, line)) {
-            Instruction inst = Instruction::parse(line);
-            int ret;
-            do {
-                ret = rs.inst_issue(inst);
-                rs.run();
-            } while (ret == -1);
-        }
-        while (!rs.is_finished()) rs.run();
-        rs.print();
-    } else 
-        cerr << "failed to open file " << fName << endl;
+    rs.load(inFile);
+    rs.run();
 
     return 0;
 }

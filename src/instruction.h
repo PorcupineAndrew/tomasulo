@@ -4,9 +4,9 @@
 
 class Instruction {
 private:
-    static int _idx;
+    static int _id;
 public:
-    int idx;
+    int id;
     int op;
     int dst;
     int src1;
@@ -20,6 +20,9 @@ public:
     int exec_comp_cycle;
     int write_result_cycle;
 
+    bool to_record;
+    // bool first_access;
+
     int remaining_cycle;
 
     string inst_string;
@@ -31,6 +34,7 @@ public:
     static bool compare(const Instruction& i, const Instruction& j);
 
     static Instruction parse(string inst_string);
+    // static Instruction cpy(Instruction& inst);
 };
 
 #endif

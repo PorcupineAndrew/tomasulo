@@ -47,5 +47,7 @@
 #define N_RS_MUL    3
 #define N_RS_LOAD   3
 
+#define COMPLE_INT(x) ((x) > 0X7FFFFFFF ? -(~(x)+1) : (x))
+
 using namespace std;
 #endif

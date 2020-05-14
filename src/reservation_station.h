@@ -22,10 +22,14 @@ public:
 
 class Reservation_Station {
 private:
+    vector<Instruction> inst_pool;
     vector<Instruction> finished;
+    int next_idx;
+    bool freeze;
 
     int cycle;
     int register_result_status[32];
+    int register_value[32];
     
     const int max_RS_Add;
     int avail_FU_Add;
@@ -42,6 +46,13 @@ private:
     RS_Entry *RS_Load;
     vector<RS_Entry *> ready_RS_Load;
 
+    vector<string> issued_list;
+    vector<string> ready_list;
+    vector<string> finished_list;
+    vector<string> write_list;
+    vector<string> event_list;
+    void flush_list();
+    void print_step();
 public:
     Reservation_Station(int n_rs_add, int n_fu_add, int n_rs_mult,
                             int n_fu_mult, int n_rs_load, int n_fu_load);
@@ -52,11 +63,18 @@ public:
     int RS_Load_avail() const;
     bool is_finished() const;
 
-    int inst_issue(Instruction inst);
-    void update(int idx);
+    int inst_issue(Instruction& inst);
+    int calculate(RS_Entry *rs);
+    void update(int id, int value);
+    void execute();
+    void step();
     void run();
 
-    void print();
+    void sort_finished();
+    void print() const;
+    void print_reg() const;
+
+    void load(ifstream& infile);
 };
 
 #endif
