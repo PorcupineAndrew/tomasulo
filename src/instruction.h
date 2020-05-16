@@ -6,6 +6,7 @@ class Instruction {
 private:
     static int _id;
 public:
+    int line_num;
     int id;
     int op;
     int dst;
@@ -28,13 +29,13 @@ public:
     string inst_string;
 
     Instruction();
-    Instruction(int op, int dst, int src1, int src2,
+    Instruction(int line_num, int op, int dst, int src1, int src2,
                     int dst_t, int src1_t, int src2_t, string inst_string);
     void print() const;
-    static bool compare(const Instruction& i, const Instruction& j);
+    static bool compare_line_num(const Instruction& i, const Instruction& j);
 
-    static Instruction parse(string inst_string);
-    // static Instruction cpy(Instruction& inst);
+    static Instruction parse(int line_num, string inst_string);
+    static Instruction instantial(Instruction& inst);
 };
 
 #endif

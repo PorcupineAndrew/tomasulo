@@ -77,9 +77,10 @@ bool Reservation_Station::is_finished() const {
     return true;
 }
 
-int Reservation_Station::inst_issue(Instruction& inst) {
+int Reservation_Station::inst_issue(Instruction& _inst) {
     if (freeze) return -1;
     int idx;
+    Instruction inst = Instruction::instantial(_inst);
     switch(inst.op) {
         case INST_LD:
             if ((idx = RS_Load_avail()) != -1) {
@@ -162,8 +163,8 @@ int Reservation_Station::inst_issue(Instruction& inst) {
             exit(-1);
     }
     if (idx != -1) {
-        issued_list.push_back(inst.inst_string);
-        inst.to_record = false;
+        issued_list.push_back(_inst.inst_string);
+        _inst.to_record = false;
     }
     return idx;
 }
@@ -287,8 +288,9 @@ void Reservation_Station::execute() {
 }
 
 void Reservation_Station::sort_finished() {
-    sort(finished.begin(), finished.end(), Instruction::compare);
+    sort(finished.begin(), finished.end(), Instruction::compare_line_num);
 }
+
 void Reservation_Station::print() const {
     for (const Instruction& i : finished) {
         i.print();
@@ -297,15 +299,16 @@ void Reservation_Station::print() const {
 
 void Reservation_Station::print_reg() const {
     for (int i = 0; i < 32; i++) {
-        cout << "R" << i << ": " << register_value[i] << endl;
+        cout << "R" << i << ": " << register_value[i] << "\t" << "S:" << register_result_status[i] << endl;
     }
 }
 
 void Reservation_Station::load(ifstream& infile) {
     if (infile.is_open()) {
+        int line_num = 0;
         string line;
         while (getline(infile, line)) {
-            inst_pool.push_back(Instruction::parse(line));
+            inst_pool.push_back(Instruction::parse(line_num++, line));
         }
     } else 
         cerr << "failed to open file" << endl;
@@ -374,6 +377,7 @@ void Reservation_Station::flush_list() {
 }
 
 void Reservation_Station::print_step() {
+#if (DEBUG)
     cout << "Cycle " << cycle-1 << endl;
     cout << "next_idx " << next_idx << endl;
 
@@ -403,7 +407,10 @@ void Reservation_Station::print_step() {
 
     cout << "--------------------------------------" << endl;
 
+    print_reg();
+
     string x;
     cin >> x;
     flush_list();
+#endif
 }

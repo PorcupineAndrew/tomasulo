@@ -6,11 +6,13 @@ Instruction::Instruction() {
     this->id = -1;
 }
 
-Instruction::Instruction(int op, int dst, int src1, int src2,
+Instruction::Instruction(int line_num, int op, int dst, int src1, int src2,
                 int dst_t, int src1_t, int src2_t, string inst_string) {
     this->to_record = true;
     // this->first_access = true;
-    this->id = _id++;
+    this->line_num = line_num;
+    // this->id = _id++;
+    this->id = -1;
     this->op = op;
     this->dst = dst;
     this->src1 = src1;
@@ -36,11 +38,11 @@ void Instruction::print() const {
         << ", write_result: " << write_result_cycle << endl;
 }
 
-bool Instruction::compare(const Instruction& i, const Instruction& j) {
-    return i.id < j.id;
+bool Instruction::compare_line_num(const Instruction& i, const Instruction& j) {
+    return i.line_num < j.line_num;
 }
 
-Instruction Instruction::parse(string inst_string) {
+Instruction Instruction::parse(int line_num, string inst_string) {
     int op, dst, src1, src2, dst_t, src1_t, src2_t;
     op = dst = src1 = src2 = dst_t = src1_t = src2_t = UNDEFINED;
 
@@ -69,7 +71,7 @@ Instruction Instruction::parse(string inst_string) {
 
             assert(items[1][0] == 'R');
             dst_t = INST_REG;
-            dst = items[1][1] - '0';
+            stringstream(items[1].substr(1)) >> dst;
 
             assert(items[2][1] == 'x');
             src1_t = INST_INT;
@@ -91,7 +93,7 @@ Instruction Instruction::parse(string inst_string) {
 
                 if (items[i][0] == 'R') {
                     type = INST_REG;
-                    target = items[i][1] - '0';
+                    stringstream(items[i].substr(1)) >> target;
                 } else {
                     assert(items[i][1] == 'x');
                     type = INST_INT;
@@ -114,19 +116,12 @@ Instruction Instruction::parse(string inst_string) {
         << " src2_t: " << src2_t << endl;
 #endif
 
-    return Instruction(op, dst, src1, src2, dst_t, src1_t, src2_t, inst_string);
+    return Instruction(line_num, op, dst, src1, src2, dst_t, src1_t, src2_t, inst_string);
 }
 
-// Instruction Instruction::cpy(Instruction& inst) {
-//     Instruction ret;
-//     if (inst.first_access) {
-//         inst.first_access = false;
-//         ret = inst;
-//         ret.to_record = true;
-//     } else {
-//         ret = inst;
-//         ret.to_record = false;
-//     }
-//     ret.id = _id ++;
-//     return ret;
-// }
+Instruction Instruction::instantial(Instruction& inst) {
+    Instruction ret;
+    ret = inst;
+    ret.id = _id ++;
+    return ret;
+}
