@@ -325,19 +325,17 @@ void Reservation_Station::run() {
     assert(next_idx == 0);
     do {
         step();
-
-        print_step();
+        // print_step();
     } while (next_idx < inst_pool.size() && next_idx >= 0);
 
     while(!is_finished()) {
         execute();
-
-        print_step();
+        // print_step();
     }
 
     sort_finished();
-    print();
-    print_reg();
+    // print();
+    // print_reg();
 }
 
 int Reservation_Station::calculate(RS_Entry *rs) {
@@ -377,7 +375,6 @@ void Reservation_Station::flush_list() {
 }
 
 void Reservation_Station::print_step() {
-#if (DEBUG)
     cout << "Cycle " << cycle-1 << endl;
     cout << "next_idx " << next_idx << endl;
 
@@ -412,5 +409,15 @@ void Reservation_Station::print_step() {
     string x;
     cin >> x;
     flush_list();
-#endif
+}
+
+void Reservation_Station::output(ofstream& outfile) {
+    if (outfile.is_open()) {
+        for (const Instruction& i : finished) {
+            outfile << i.issue_cycle << " " 
+                << i.exec_comp_cycle << " " 
+                << i.write_result_cycle << endl;
+        }
+    } else
+        cerr << "failed to open file" << endl;
 }

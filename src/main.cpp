@@ -23,16 +23,21 @@ bool cmdOptionExists(char** begin, char** end, const string& option) {
 
 /* Arguments:
  *  --input_file    : input file path,          [string]
+ *  --output_path   : output file path,         [string]
  **/
 int main(int argc, char** argv) {
     signal(SIGABRT, error_handler);
 
     string fName = getCmdOption(argv, argv+argc, "--input_file");
+    string oName = getCmdOption(argv, argv+argc, "--output_path");
     ifstream inFile (fName);
     Reservation_Station rs(N_RS_ADD, N_FU_ADD, N_RS_MUL, N_FU_MUL, N_RS_LOAD, N_FU_LOAD);
 
     rs.load(inFile);
     rs.run();
+
+    ofstream outFile(oName);
+    rs.output(outFile);
 
     return 0;
 }

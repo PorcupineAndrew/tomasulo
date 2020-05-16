@@ -75,6 +75,7 @@ public:
     void print_reg() const;
 
     void load(ifstream& infile);
+    void output(ofstream& outfile);
 };
 
 #endif
