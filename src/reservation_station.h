@@ -18,6 +18,8 @@ public:
     void flush();
     
     static bool compare(RS_Entry *i, RS_Entry *j);
+    void print_loader() const;
+    void print_rs() const;
 };
 
 class Reservation_Station {

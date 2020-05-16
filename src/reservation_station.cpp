@@ -13,6 +13,19 @@ bool RS_Entry::compare(RS_Entry *i, RS_Entry *j) {
     return i->inst.id < j->inst.id;
 }
 
+void RS_Entry::print_loader() const {
+    cout << (Busy ? "Busy " : "Empty")
+        << " | " << "Address: " << (Address == UNDEFINED ? "None" : to_string(Address));
+}
+
+void RS_Entry::print_rs() const {
+    cout << (Busy ? "Busy " : "Empty")
+        << " | Vj: " << (Vj == UNDEFINED ? "None" : to_string(Vj))
+        << " | Vk: " << (Vk == UNDEFINED ? "None" : to_string(Vk))
+        << " | Qj: " << (Qj == UNDEFINED ? "None" : to_string(Qj))
+        << " | Qk: " << (Qk == UNDEFINED ? "None" : to_string(Qk));
+}
+
 Reservation_Station::Reservation_Station(int n_rs_add,
     int n_fu_add, int n_rs_mult, int n_fu_mult, int n_rs_load, int n_fu_load) : 
     max_RS_Add(n_rs_add), max_RS_Mult(n_rs_mult), max_RS_Load(n_rs_load) {
@@ -325,12 +338,16 @@ void Reservation_Station::run() {
     assert(next_idx == 0);
     do {
         step();
-        // print_step();
+#if (STEP)
+        print_step();
+#endif
     } while (next_idx < inst_pool.size() && next_idx >= 0);
 
     while(!is_finished()) {
         execute();
-        // print_step();
+#if (STEP)
+        print_step();
+#endif
     }
 
     sort_finished();
@@ -375,7 +392,7 @@ void Reservation_Station::flush_list() {
 }
 
 void Reservation_Station::print_step() {
-    cout << "Cycle " << cycle-1 << endl;
+    cout << "cycle " << cycle-1 << endl;
     cout << "next_idx " << next_idx << endl;
 
     cout << "issued:";
@@ -404,10 +421,33 @@ void Reservation_Station::print_step() {
 
     cout << "--------------------------------------" << endl;
 
+    cout << "LoadLoader" << endl;
+    for (int i = 0; i < max_RS_Load; i++) {
+        cout << "\t";
+        RS_Load[i].print_loader();
+        cout << endl;
+    }
+
+    cout << "Add" << endl;
+    for (int i = 0; i < max_RS_Add; i++) {
+        cout << "\t";
+        RS_Add[i].print_rs();
+        cout << endl;
+    }
+
+    cout << "Mult" << endl;
+    for (int i = 0; i < max_RS_Mult; i++) {
+        cout << "\t";
+        RS_Mult[i].print_rs();
+        cout << endl;
+    }
+
+    cout << "--------------------------------------" << endl;
+
     print_reg();
 
-    string x;
-    cin >> x;
+    cout << "Press ENTER to continue..." << endl;
+    cin.get();
     flush_list();
 }
 

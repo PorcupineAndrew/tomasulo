@@ -16,7 +16,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifndef DEBUG
 #define DEBUG       0
+#endif
+
+#ifndef STEP
+#define STEP        0
+#endif
 
 // 指令相关
 #define UNDEFINED   -1
