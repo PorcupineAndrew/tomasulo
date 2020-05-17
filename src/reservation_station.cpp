@@ -329,7 +329,8 @@ void Reservation_Station::load(ifstream& infile) {
 
 void Reservation_Station::step() {
     if (inst_issue(inst_pool[next_idx]) != -1) {
-        next_idx ++;
+        if (!freeze)
+            next_idx ++;
     }
     execute();
 }
