@@ -1,0 +1,14 @@
+{
+    "0.basic": "time elapsed: 0.460749 miliseconds",
+    "1.basic": "time elapsed: 1.81993 miliseconds",
+    "2.basic": "time elapsed: 1.40684 miliseconds",
+    "3.basic": "time elapsed: 1.51634 miliseconds",
+    "4.basic": "time elapsed: 2.34449 miliseconds",
+    "Fact": "time elapsed: 1.23715 miliseconds",
+    "Fabo": "time elapsed: 0.81185 miliseconds",
+    "Example": "time elapsed: 0.93785 miliseconds",
+    "Gcd": "time elapsed: 8609.26 miliseconds",
+    "myCase": "time elapsed: 93.3841 miliseconds",
+    "Mul": "time elapsed: 37.5535 miliseconds",
+    "Big_test": "time elapsed: 35969.2 miliseconds"
+}

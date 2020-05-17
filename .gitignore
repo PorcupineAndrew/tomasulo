@@ -1,4 +1,5 @@
 *.pdf
+!report.pdf
 Session.vim
 bin/
 obj/
