@@ -27,17 +27,24 @@ bool cmdOptionExists(char** begin, char** end, const string& option) {
  **/
 int main(int argc, char** argv) {
     signal(SIGABRT, error_handler);
+    chrono::high_resolution_clock::time_point t0 = chrono::high_resolution_clock::now();
 
     string fName = getCmdOption(argv, argv+argc, "--input_file");
-    string oName = getCmdOption(argv, argv+argc, "--output_path");
     ifstream inFile (fName);
     Reservation_Station rs(N_RS_ADD, N_FU_ADD, N_RS_MUL, N_FU_MUL, N_RS_LOAD, N_FU_LOAD);
 
     rs.load(inFile);
     rs.run();
 
-    ofstream outFile(oName);
-    rs.output(outFile);
+    if (cmdOptionExists(argv, argv+argc, "--output_path")) {
+        string oName = getCmdOption(argv, argv+argc, "--output_path");
+        ofstream outFile(oName);
+        rs.output(outFile);
+    }
+
+    chrono::high_resolution_clock::time_point t1 = chrono::high_resolution_clock::now();
+    chrono::duration<double, milli> time_span = t1 -t0;
+    cout << "time elapsed: " << time_span.count() << " miliseconds" << endl;
 
     return 0;
 }
